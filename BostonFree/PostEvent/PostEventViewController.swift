@@ -97,9 +97,7 @@ class PostEventViewController: UIViewController {
                 return
             }
             DispatchQueue.main.async {
-                self?.showAlert(title: "Success", message: "Event posted successfully!") {
-                    self?.navigationController?.popViewController(animated: true)
-                }
+                self?.navigationController?.popViewController(animated: true)
             }
         }
     }
