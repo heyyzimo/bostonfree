@@ -28,10 +28,19 @@ class EventDetailsView: UIView {
     
     let locationLabel: UILabel = {
         let label = UILabel()
+        label.numberOfLines = 0
         label.font = UIFont.systemFont(ofSize: 18)
         label.textColor = .systemGray
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
+    }()
+    let mapButton: UIButton = {
+        let button = UIButton(type: .system)
+        let image = UIImage(systemName: "map")
+        button.setImage(image, for: .normal)
+        button.tintColor = .systemBlue
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
     }()
     
     let descriptionLabel: UILabel = {
@@ -60,6 +69,7 @@ class EventDetailsView: UIView {
         self.addSubview(eventImageView)
         self.addSubview(eventNameLabel)
         self.addSubview(locationLabel)
+        self.addSubview(mapButton)
         self.addSubview(descriptionLabel)
         self.addSubview(websiteButton)
         
@@ -76,6 +86,10 @@ class EventDetailsView: UIView {
             locationLabel.topAnchor.constraint(equalTo: eventNameLabel.bottomAnchor, constant: 8),
             locationLabel.leftAnchor.constraint(equalTo: eventNameLabel.leftAnchor),
             locationLabel.rightAnchor.constraint(equalTo: eventNameLabel.rightAnchor),
+            mapButton.centerYAnchor.constraint(equalTo: locationLabel.centerYAnchor),
+            mapButton.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -16),
+            mapButton.widthAnchor.constraint(equalToConstant: 24),
+            mapButton.heightAnchor.constraint(equalToConstant: 24),
             
             descriptionLabel.topAnchor.constraint(equalTo: locationLabel.bottomAnchor, constant: 16),
             descriptionLabel.leftAnchor.constraint(equalTo: eventNameLabel.leftAnchor),

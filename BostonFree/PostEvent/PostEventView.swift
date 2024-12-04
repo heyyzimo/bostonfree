@@ -2,12 +2,13 @@
 //  PostEventView.swift
 //  BostonFree
 //
-//  Created by user267597 on 12/3/24.
+//  Created by user267597 on 12/4/24.
 //
 import UIKit
+import MapKit
 
 class PostEventView: UIView, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    
+
     let scrollView: UIScrollView = {
         let sv = UIScrollView()
         sv.translatesAutoresizingMaskIntoConstraints = false
@@ -34,6 +35,26 @@ class PostEventView: UIView, UIImagePickerControllerDelegate, UINavigationContro
         tf.borderStyle = .roundedRect
         tf.translatesAutoresizingMaskIntoConstraints = false
         return tf
+    }()
+    
+    let locationContainerView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    let locationSuggestionsTableView: UITableView = {
+        let tv = UITableView()
+        tv.register(UITableViewCell.self, forCellReuseIdentifier: "SuggestionCell")
+        tv.isHidden = true
+        tv.translatesAutoresizingMaskIntoConstraints = false
+        return tv
+    }()
+    
+    let mapView: MKMapView = {
+        let mv = MKMapView()
+        mv.isHidden = true
+        mv.translatesAutoresizingMaskIntoConstraints = false
+        return mv
     }()
     
     let descriptionTextView: UITextView = {
@@ -84,13 +105,12 @@ class PostEventView: UIView, UIImagePickerControllerDelegate, UINavigationContro
         return button
     }()
     
-    var imageSelected: ((UIImage?) -> Void)?
+    var didTapSuggestion: ((MKLocalSearchCompletion) -> Void)?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = .white
         setupLayout()
-        selectImageButton.addTarget(self, action: #selector(handleSelectImage), for: .touchUpInside)
     }
     
     func setupLayout() {
@@ -99,11 +119,15 @@ class PostEventView: UIView, UIImagePickerControllerDelegate, UINavigationContro
         
         contentView.addSubview(eventNameTextField)
         contentView.addSubview(locationTextField)
+        contentView.addSubview(locationContainerView)
         contentView.addSubview(descriptionTextView)
         contentView.addSubview(websiteTextField)
         contentView.addSubview(selectImageButton)
         contentView.addSubview(eventImageView)
         contentView.addSubview(postButton)
+        
+        locationContainerView.addSubview(locationSuggestionsTableView)
+        locationContainerView.addSubview(mapView)
         
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor),
@@ -127,7 +151,22 @@ class PostEventView: UIView, UIImagePickerControllerDelegate, UINavigationContro
             locationTextField.rightAnchor.constraint(equalTo: eventNameTextField.rightAnchor),
             locationTextField.heightAnchor.constraint(equalToConstant: 40),
             
-            descriptionTextView.topAnchor.constraint(equalTo: locationTextField.bottomAnchor, constant: 16),
+            locationContainerView.topAnchor.constraint(equalTo: locationTextField.bottomAnchor),
+            locationContainerView.leftAnchor.constraint(equalTo: locationTextField.leftAnchor),
+            locationContainerView.rightAnchor.constraint(equalTo: locationTextField.rightAnchor),
+            locationContainerView.heightAnchor.constraint(equalToConstant: 200), // 固定高度
+            
+            locationSuggestionsTableView.topAnchor.constraint(equalTo: locationContainerView.topAnchor),
+            locationSuggestionsTableView.leftAnchor.constraint(equalTo: locationContainerView.leftAnchor),
+            locationSuggestionsTableView.rightAnchor.constraint(equalTo: locationContainerView.rightAnchor),
+            locationSuggestionsTableView.bottomAnchor.constraint(equalTo: locationContainerView.bottomAnchor),
+            
+            mapView.topAnchor.constraint(equalTo: locationContainerView.topAnchor),
+            mapView.leftAnchor.constraint(equalTo: locationContainerView.leftAnchor),
+            mapView.rightAnchor.constraint(equalTo: locationContainerView.rightAnchor),
+            mapView.bottomAnchor.constraint(equalTo: locationContainerView.bottomAnchor),
+            
+            descriptionTextView.topAnchor.constraint(equalTo: locationContainerView.bottomAnchor, constant: 16),
             descriptionTextView.leftAnchor.constraint(equalTo: eventNameTextField.leftAnchor),
             descriptionTextView.rightAnchor.constraint(equalTo: eventNameTextField.rightAnchor),
             descriptionTextView.heightAnchor.constraint(equalToConstant: 100),
@@ -136,63 +175,36 @@ class PostEventView: UIView, UIImagePickerControllerDelegate, UINavigationContro
             websiteTextField.leftAnchor.constraint(equalTo: eventNameTextField.leftAnchor),
             websiteTextField.rightAnchor.constraint(equalTo: eventNameTextField.rightAnchor),
             websiteTextField.heightAnchor.constraint(equalToConstant: 40),
-
+            
             selectImageButton.topAnchor.constraint(equalTo: websiteTextField.bottomAnchor, constant: 16),
             selectImageButton.leftAnchor.constraint(equalTo: eventNameTextField.leftAnchor),
             selectImageButton.rightAnchor.constraint(equalTo: eventNameTextField.rightAnchor),
             selectImageButton.heightAnchor.constraint(equalToConstant: 50),
-
+            
             eventImageView.topAnchor.constraint(equalTo: selectImageButton.bottomAnchor, constant: 16),
             eventImageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             eventImageView.widthAnchor.constraint(equalToConstant: 200),
             eventImageView.heightAnchor.constraint(equalToConstant: 200),
-
+            
+            // Post Button
             postButton.topAnchor.constraint(equalTo: eventImageView.bottomAnchor, constant: 24),
             postButton.leftAnchor.constraint(equalTo: eventNameTextField.leftAnchor),
             postButton.rightAnchor.constraint(equalTo: eventNameTextField.rightAnchor),
             postButton.heightAnchor.constraint(equalToConstant: 50),
-            postButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20)
+            postButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20) 
         ])
     }
     
-    @objc func handleSelectImage() {
-        // Trigger image selection
-        let imagePicker = UIImagePickerController()
-        imagePicker.delegate = self
-        imagePicker.sourceType = .photoLibrary
-        imagePicker.allowsEditing = true
-        if let viewController = self.findViewController() {
-            viewController.present(imagePicker, animated: true, completion: nil)
-        }
-    }
-    
-    // Called when an image is selected
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        var selectedImage: UIImage?
         if let editedImage = info[.editedImage] as? UIImage {
-            selectedImage = editedImage
+            eventImageView.image = editedImage
         } else if let originalImage = info[.originalImage] as? UIImage {
-            selectedImage = originalImage
+            eventImageView.image = originalImage
         }
-        eventImageView.image = selectedImage
-        imageSelected?(selectedImage)
         picker.dismiss(animated: true, completion: nil)
-    }
-    
-    //Finds the current view's UIViewController by traversing the responder chain
-    func findViewController() -> UIViewController? {
-        var nextResponder: UIResponder? = self
-        while nextResponder != nil {
-            nextResponder = nextResponder?.next
-            if let vc = nextResponder as? UIViewController {
-                return vc
-            }
-        }
-        return nil
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
-

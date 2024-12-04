@@ -15,7 +15,7 @@ class EventsListView: UIView, UITableViewDelegate, UITableViewDataSource {
         return tv
     }()
     
-    // init data source
+    // init data
     var events: [EventModel] = []
     
     // Callback when an event is selected
@@ -30,9 +30,10 @@ class EventsListView: UIView, UITableViewDelegate, UITableViewDataSource {
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
-    
+        
     // Callback for post event button tap
     var didTapPostEvent: (() -> Void)?
+    
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -41,7 +42,6 @@ class EventsListView: UIView, UITableViewDelegate, UITableViewDataSource {
         tableView.delegate = self
         tableView.dataSource = self
         postEventButton.addTarget(self, action: #selector(handlePostEvent), for: .touchUpInside)
-        
         tableView.rowHeight = 150
         tableView.estimatedRowHeight = 150
     }
@@ -56,11 +56,13 @@ class EventsListView: UIView, UITableViewDelegate, UITableViewDataSource {
         self.addSubview(postEventButton)
         
         NSLayoutConstraint.activate([
+            // TableView constraints
             tableView.topAnchor.constraint(equalTo: self.topAnchor),
             tableView.leftAnchor.constraint(equalTo: self.leftAnchor),
             tableView.rightAnchor.constraint(equalTo: self.rightAnchor),
             tableView.bottomAnchor.constraint(equalTo: postEventButton.topAnchor, constant: -10),
             
+            // Post Event Button constraints
             postEventButton.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 16),
             postEventButton.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -16),
             postEventButton.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: -16),
@@ -71,6 +73,7 @@ class EventsListView: UIView, UITableViewDelegate, UITableViewDataSource {
     @objc func handlePostEvent() {
         didTapPostEvent?()
     }
+
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
          return events.count
@@ -85,7 +88,6 @@ class EventsListView: UIView, UITableViewDelegate, UITableViewDataSource {
         cell.configure(with: event)
         return cell
     }
-
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let event = events[indexPath.row]

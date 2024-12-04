@@ -5,12 +5,14 @@
 //  Created by user267597 on 12/3/24.
 //
 import Foundation
-import FirebaseCore
+import FirebaseFirestore
 
 struct EventModel {
     let eventId: String
     let name: String
     let location: String
+    let latitude: Double
+    let longitude: Double
     let imageUrl: String
     let description: String?
     let website: String?
@@ -20,6 +22,8 @@ struct EventModel {
         self.eventId = documentId
         self.name = dictionary["name"] as? String ?? ""
         self.location = dictionary["location"] as? String ?? ""
+        self.latitude = dictionary["latitude"] as? Double ?? 0.0
+        self.longitude = dictionary["longitude"] as? Double ?? 0.0
         self.imageUrl = dictionary["imageUrl"] as? String ?? ""
         self.description = dictionary["description"] as? String
         self.website = dictionary["website"] as? String

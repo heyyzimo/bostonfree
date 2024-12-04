@@ -8,15 +8,7 @@ import UIKit
 import SDWebImage
 
 class EventTableViewCell: UITableViewCell {
-
-    let eventNameLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.boldSystemFont(ofSize: 18)
-        label.numberOfLines = 2
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-
+    
     let eventImageView: UIImageView = {
         let iv = UIImageView()
         iv.contentMode = .scaleAspectFill
@@ -26,25 +18,46 @@ class EventTableViewCell: UITableViewCell {
         return iv
     }()
     
+    let eventNameLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.boldSystemFont(ofSize: 20)
+        label.numberOfLines = 2
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    let distanceLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 16)
+        label.textColor = .systemGray
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
        
-        contentView.addSubview(eventNameLabel)
         contentView.addSubview(eventImageView)
+        contentView.addSubview(eventNameLabel)
+        contentView.addSubview(distanceLabel)
         
         NSLayoutConstraint.activate([
-            eventNameLabel.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 16),
-            eventNameLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            eventNameLabel.rightAnchor.constraint(equalTo: eventImageView.leftAnchor, constant: -16),
-
-            eventImageView.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -16),
-            eventImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            eventImageView.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 16),
+            eventImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
+            eventImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
             eventImageView.widthAnchor.constraint(equalToConstant: 120),
-            eventImageView.heightAnchor.constraint(equalToConstant: 120) 
+            eventImageView.heightAnchor.constraint(equalToConstant: 120),
+
+            eventNameLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
+            eventNameLabel.leftAnchor.constraint(equalTo: eventImageView.rightAnchor, constant: 16),
+            eventNameLabel.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -16),
+
+            distanceLabel.topAnchor.constraint(equalTo: eventNameLabel.bottomAnchor, constant: 8),
+            distanceLabel.leftAnchor.constraint(equalTo: eventNameLabel.leftAnchor),
+            distanceLabel.rightAnchor.constraint(equalTo: eventNameLabel.rightAnchor)
         ])
     }
-    
-    //configure cell content
+
     func configure(with event: EventModel) {
         eventNameLabel.text = event.name
         if let url = URL(string: event.imageUrl) {
@@ -58,3 +71,4 @@ class EventTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 }
+

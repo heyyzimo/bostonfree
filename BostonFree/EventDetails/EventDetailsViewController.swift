@@ -24,10 +24,22 @@ class EventDetailsViewController: UIViewController {
         super.viewDidLoad()
         self.title = "Event Details"
         eventDetailsView.configure(with: event)
+        setupMapButtonAction()
+    }
+    
+    func setupMapButtonAction() {
+        eventDetailsView.mapButton.addTarget(self, action: #selector(handleMapButton), for: .touchUpInside)
+    }
+    
+    @objc func handleMapButton() {
+        let mapVC = MapViewController()
+        mapVC.selectedEvent = event 
+        self.navigationController?.pushViewController(mapVC, animated: true)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
 

@@ -21,6 +21,10 @@ class EventsListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Free Events"
+        let mapImage = UIImage(systemName: "map")
+        let mapBarButton = UIBarButtonItem(image: mapImage, style: .plain, target: self, action: #selector(mapButtonTapped))
+        self.navigationItem.rightBarButtonItem = mapBarButton
+
         eventsListView.didSelectEvent = { [weak self] event in
             let detailsVC = EventDetailsViewController(event: event)
             self?.navigationController?.pushViewController(detailsVC, animated: true)
@@ -29,7 +33,12 @@ class EventsListViewController: UIViewController {
             let postEventVC = PostEventViewController()
             self?.navigationController?.pushViewController(postEventVC, animated: true)
         }
+
         fetchEvents()
+    }
+    @objc func mapButtonTapped() {
+        let mapVC = MapViewController()
+        self.navigationController?.pushViewController(mapVC, animated: true)
     }
     
     func fetchEvents() {
