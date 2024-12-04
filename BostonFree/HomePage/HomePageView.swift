@@ -36,6 +36,16 @@ class HomePageView: UIView {
         return button
     }()
     
+    let viewEventsButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("View Free Events", for: .normal)
+        button.backgroundColor = UIColor.systemBlue
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 8
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = .white
@@ -50,6 +60,7 @@ class HomePageView: UIView {
         self.addSubview(welcomeLabel)
         self.addSubview(emailLabel)
         self.addSubview(logoutButton)
+        self.addSubview(viewEventsButton)
         
         NSLayoutConstraint.activate([
             // Welcome Label
@@ -60,9 +71,15 @@ class HomePageView: UIView {
             emailLabel.topAnchor.constraint(equalTo: welcomeLabel.bottomAnchor, constant: 20),
             emailLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             
+            // View Events Button
+            viewEventsButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            viewEventsButton.topAnchor.constraint(equalTo: emailLabel.bottomAnchor, constant: 30),
+            viewEventsButton.widthAnchor.constraint(equalToConstant: 200),
+            viewEventsButton.heightAnchor.constraint(equalToConstant: 50),
+            
             // Logout Button
             logoutButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            logoutButton.topAnchor.constraint(equalTo: emailLabel.bottomAnchor, constant: 40),
+            logoutButton.topAnchor.constraint(equalTo: viewEventsButton.bottomAnchor, constant: 20),
             logoutButton.widthAnchor.constraint(equalToConstant: 200),
             logoutButton.heightAnchor.constraint(equalToConstant: 50)
         ])

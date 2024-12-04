@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		73A6E4952CFFC1D400542B27 /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 73A6E4942CFFC1D400542B27 /* SDWebImage */; };
 		8A468F402CF5437C00B3159A /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 8A468F3F2CF5437C00B3159A /* FirebaseAuth */; };
 		8A468F422CF5437C00B3159A /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 8A468F412CF5437C00B3159A /* FirebaseFirestore */; };
 		8A468F442CF5437C00B3159A /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 8A468F432CF5437C00B3159A /* FirebaseStorage */; };
@@ -44,6 +45,7 @@
 			files = (
 				8A468F402CF5437C00B3159A /* FirebaseAuth in Frameworks */,
 				8A468F422CF5437C00B3159A /* FirebaseFirestore in Frameworks */,
+				73A6E4952CFFC1D400542B27 /* SDWebImage in Frameworks */,
 				8A468F442CF5437C00B3159A /* FirebaseStorage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -90,6 +92,7 @@
 				8A468F3F2CF5437C00B3159A /* FirebaseAuth */,
 				8A468F412CF5437C00B3159A /* FirebaseFirestore */,
 				8A468F432CF5437C00B3159A /* FirebaseStorage */,
+				73A6E4942CFFC1D400542B27 /* SDWebImage */,
 			);
 			productName = BostonFree;
 			productReference = 8A468F022CF5108100B3159A /* BostonFree.app */;
@@ -121,6 +124,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				8A468F3E2CF5437C00B3159A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				73A6E4932CFFC1D400542B27 /* XCRemoteSwiftPackageReference "SDWebImage" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 8A468F032CF5108100B3159A /* Products */;
@@ -350,6 +354,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		73A6E4932CFFC1D400542B27 /* XCRemoteSwiftPackageReference "SDWebImage" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImage.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.20.0;
+			};
+		};
 		8A468F3E2CF5437C00B3159A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -361,6 +373,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		73A6E4942CFFC1D400542B27 /* SDWebImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 73A6E4932CFFC1D400542B27 /* XCRemoteSwiftPackageReference "SDWebImage" */;
+			productName = SDWebImage;
+		};
 		8A468F3F2CF5437C00B3159A /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 8A468F3E2CF5437C00B3159A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;

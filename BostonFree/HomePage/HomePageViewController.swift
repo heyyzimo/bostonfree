@@ -19,7 +19,7 @@ class HomePageViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        homeView.viewEventsButton.addTarget(self, action: #selector(handleViewEvents), for: .touchUpInside)
         homeView.logoutButton.addTarget(self, action: #selector(handleLogout), for: .touchUpInside)
         fetchUserData()
     }
@@ -52,6 +52,11 @@ class HomePageViewController: UIViewController {
         } catch let signOutError as NSError {
             showAlert(message: "Error signing out: \(signOutError.localizedDescription)")
         }
+    }
+    
+    @objc func handleViewEvents() {
+        let eventsListVC = EventsListViewController()
+        navigationController?.pushViewController(eventsListVC, animated: true)
     }
     
     func showAlert(message: String) {
