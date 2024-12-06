@@ -39,41 +39,44 @@ class LoginViewController: UIViewController {
             return
         }
         
-        //验证邮箱
         if !isValidEmail(email) {
-                showAlert(message: "Please enter a valid email address.")
-                return
-            }
-        
+            showAlert(message: "Please enter a valid email address.")
+            return
+        }
+
         // 显示加载动画
-            let activityIndicator = UIActivityIndicatorView(style: .large)
-            activityIndicator.center = view.center
-            activityIndicator.startAnimating()
-            self.view.addSubview(activityIndicator)
-        
+        let activityIndicator = UIActivityIndicatorView(style: .large)
+        activityIndicator.center = view.center
+        activityIndicator.startAnimating()
+        self.view.addSubview(activityIndicator)
         
         Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
             
             // 停止加载动画
             activityIndicator.stopAnimating()
             activityIndicator.removeFromSuperview()
-
+            
             if let error = error {
                 self?.showAlert(message: error.localizedDescription)
                 return
             }
-            
             
             // 获取 user 对象
             guard let user = authResult?.user else {
                 self?.showAlert(message: "Failed to retrieve user information.")
                 return
             }
-        
+            
             // 检查并创建初始 Profile
             self?.checkAndCreateProfile(for: user.uid)
-
-            // login successed, jump to home page
+            
+            /// 登录成功，保存状态
+            UserDefaults.standard.set(true, forKey: "isLoggedIn") // 设置为已登录
+            UserDefaults.standard.set(email, forKey: "userEmail") // 保存用户的 email
+            
+            print("User login state saved.")
+            
+            // 登录成功，跳转到主页
             let homeVC = HomePageViewController()
             self?.navigationController?.setViewControllers([homeVC], animated: true)
         }
@@ -100,11 +103,12 @@ class LoginViewController: UIViewController {
     func createInitialProfile(for userId: String) {
         let initialProfile: [String: Any] = [
             "name": "New222User",
-            "bio": "This222 is a new profile.",
             "city": "Unkn222own",
             "hobby": "Non22e",
             "pronoun": "Th22ey/Them",
-            "phoneNumber": "22N/A"
+            "phoneNumber": "22N/A",
+            "selfIntroduction" : "initial introduction"
+            
         ]
         
         db.collection("profiles").document(userId).setData(initialProfile) { error in

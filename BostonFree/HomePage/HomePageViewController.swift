@@ -113,16 +113,24 @@ class HomePageViewController: UIViewController {
         navigationController?.pushViewController(eventsListVC, animated: true)
     }
     
-    /// 登出
+
     @objc func handleLogout() {
         do {
+            // 调用 Firebase 的登出方法
             try Auth.auth().signOut()
-            let initialVC = ViewController()
+            
+            // 清除 UserDefaults 中的登录状态
+            UserDefaults.standard.set(false, forKey: "isLoggedIn")
+            UserDefaults.standard.removeObject(forKey: "userEmail") // 如果需要也可以移除用户数据
+            
+            // 跳转到初始页面
+            let initialVC = ViewController() // 假设 ViewController 是初始页面
             navigationController?.setViewControllers([initialVC], animated: true)
         } catch let signOutError as NSError {
             showAlert(message: "Error signing out: \(signOutError.localizedDescription)")
         }
     }
+
     
     /// 显示错误信息
     func showAlert(message: String) {

@@ -24,6 +24,19 @@ class ViewController: UIViewController {
         
         initialView.loginButton.addTarget(self, action: #selector(handleLogin), for: .touchUpInside)
         initialView.signupButton.addTarget(self, action: #selector(handleSignup), for: .touchUpInside)
+        
+        // 检查用户登录状态
+        checkLoginStatus()
+    }
+    
+    // 检查用户登录状态
+    func checkLoginStatus() {
+        let isLoggedIn = UserDefaults.standard.bool(forKey: "isLoggedIn")
+        if isLoggedIn {
+            // 如果用户已登录，直接跳转到主页
+            let homeVC = HomePageViewController()
+            navigationController?.setViewControllers([homeVC], animated: true)
+        }
     }
     
     @objc func handleLogin() {
