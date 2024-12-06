@@ -3,11 +3,24 @@
 //  BostonFree
 //
 //  Created by user267597 on 12/3/24.
-//
+//confirm密码输入错误时会提示红色字label加进去了
 import UIKit
 
 class SignupView: UIView {
     
+    
+    //提示第二次输入的密码不一样
+    let errorLabel: UILabel = {
+        let label = UILabel()
+        label.text = "" // 初始内容为空
+        label.textColor = .red // 错误信息用红色
+        label.font = UIFont.systemFont(ofSize: 14) // 小号字体
+        label.textAlignment = .center
+        label.numberOfLines = 0 // 允许多行显示
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+
     // UI Elements
     let signupLabel: UILabel = {
         let label = UILabel()
@@ -78,7 +91,9 @@ class SignupView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = .white
+        self.backgroundColor = UIColor { traitCollection in
+            traitCollection.userInterfaceStyle == .dark ? .black : .white
+        }
         setupLayout()
     }
     
@@ -94,6 +109,7 @@ class SignupView: UIView {
         self.addSubview(confirmPasswordTextField)
         self.addSubview(signupButton)
         self.addSubview(signinPrompt)
+        self.addSubview(errorLabel)
         
         NSLayoutConstraint.activate([
             // Sign Up Label
@@ -122,9 +138,14 @@ class SignupView: UIView {
             confirmPasswordTextField.widthAnchor.constraint(equalTo: emailTextField.widthAnchor),
             confirmPasswordTextField.heightAnchor.constraint(equalTo: emailTextField.heightAnchor),
             
+            // Error Label
+            errorLabel.topAnchor.constraint(equalTo: confirmPasswordTextField.bottomAnchor, constant: 10),
+            errorLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            errorLabel.widthAnchor.constraint(equalTo: emailTextField.widthAnchor),
+    
             // Sign Up Button
             signupButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            signupButton.topAnchor.constraint(equalTo: confirmPasswordTextField.bottomAnchor, constant: 30),
+            signupButton.topAnchor.constraint(equalTo: errorLabel.bottomAnchor, constant: 30),
             signupButton.widthAnchor.constraint(equalToConstant: 200),
             signupButton.heightAnchor.constraint(equalToConstant: 50),
             

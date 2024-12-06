@@ -11,10 +11,12 @@
 		8A468F402CF5437C00B3159A /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 8A468F3F2CF5437C00B3159A /* FirebaseAuth */; };
 		8A468F422CF5437C00B3159A /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 8A468F412CF5437C00B3159A /* FirebaseFirestore */; };
 		8A468F442CF5437C00B3159A /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 8A468F432CF5437C00B3159A /* FirebaseStorage */; };
+		8A86D0472D02B7CB00E79F2A /* app_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 8A86D0462D02B7CB00E79F2A /* app_logo.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		8A468F022CF5108100B3159A /* BostonFree.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BostonFree.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8A86D0462D02B7CB00E79F2A /* app_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = app_logo.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -58,6 +60,7 @@
 			children = (
 				8A468F032CF5108100B3159A /* Products */,
 				8A468F042CF5108100B3159A /* BostonFree */,
+				8A86D0462D02B7CB00E79F2A /* app_logo.png */,
 			);
 			sourceTree = "<group>";
 		};
@@ -141,6 +144,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8A86D0472D02B7CB00E79F2A /* app_logo.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

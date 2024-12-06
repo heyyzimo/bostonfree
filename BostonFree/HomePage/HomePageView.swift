@@ -1,12 +1,30 @@
-//
-//  HomePageView.swift
-//  BostonFree
-//
-//  Created by user267597 on 12/3/24.
-//
+//做了edit profile和show profile两个按钮
+//用来更新显示profile
 import UIKit
 
 class HomePageView: UIView {
+    
+    
+    let editProfileButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Edit Profile", for: .normal)
+        button.backgroundColor = UIColor.systemGreen
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 8
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+
+    let showProfileButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Show Profile", for: .normal)
+        button.backgroundColor = UIColor.systemBlue
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 8
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+
     
     // UI Elements
     let welcomeLabel: UILabel = {
@@ -60,7 +78,9 @@ class HomePageView: UIView {
         self.addSubview(welcomeLabel)
         self.addSubview(emailLabel)
         self.addSubview(logoutButton)
+        self.addSubview(editProfileButton)
         self.addSubview(viewEventsButton)
+        self.addSubview(showProfileButton)
         
         NSLayoutConstraint.activate([
             // Welcome Label
@@ -71,9 +91,21 @@ class HomePageView: UIView {
             emailLabel.topAnchor.constraint(equalTo: welcomeLabel.bottomAnchor, constant: 20),
             emailLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             
+            // Edit Profile Button
+            editProfileButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            editProfileButton.topAnchor.constraint(equalTo: emailLabel.bottomAnchor, constant: 30),
+            editProfileButton.widthAnchor.constraint(equalToConstant: 200),
+            editProfileButton.heightAnchor.constraint(equalToConstant: 50),
+            
+            // Show Profile Button
+            showProfileButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            showProfileButton.topAnchor.constraint(equalTo: editProfileButton.bottomAnchor, constant: 20),
+            showProfileButton.widthAnchor.constraint(equalToConstant: 200),
+            showProfileButton.heightAnchor.constraint(equalToConstant: 50),
+            
             // View Events Button
             viewEventsButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            viewEventsButton.topAnchor.constraint(equalTo: emailLabel.bottomAnchor, constant: 30),
+            viewEventsButton.topAnchor.constraint(equalTo: showProfileButton.bottomAnchor, constant: 30),
             viewEventsButton.widthAnchor.constraint(equalToConstant: 200),
             viewEventsButton.heightAnchor.constraint(equalToConstant: 50),
             

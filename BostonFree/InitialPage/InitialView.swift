@@ -1,12 +1,15 @@
-//
-//  InitialView.swift
-//  BostonFree
-//
-//  Created by user267597 on 12/3/24.
-
+//修改部分：加了logo图片，根据系统设置背景颜色，添加语音
 import UIKit
 
 class InitialView: UIView {
+    
+    let logoImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "app_logo")
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
     
     // UI Elements
     let titleLabel: UILabel = {
@@ -40,8 +43,14 @@ class InitialView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = .white
+        
+        // 适应系统设置颜色
+        self.backgroundColor = UIColor { traitCollection in
+            traitCollection.userInterfaceStyle == .dark ? .black : .white
+        }
+        
         setupLayout()
+        setupAccessibility()
     }
     
     required init?(coder: NSCoder) {
@@ -49,11 +58,19 @@ class InitialView: UIView {
     }
     
     func setupLayout() {
+        self.addSubview(logoImageView)
         self.addSubview(titleLabel)
         self.addSubview(loginButton)
         self.addSubview(signupButton)
         
         NSLayoutConstraint.activate([
+            
+            //logo
+            logoImageView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            logoImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: -200),
+            logoImageView.widthAnchor.constraint(equalToConstant: 100),
+            logoImageView.heightAnchor.constraint(equalToConstant: 100),
+            
             // Title Label
             titleLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             titleLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: -100),
@@ -71,5 +88,15 @@ class InitialView: UIView {
             signupButton.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
+    
+    func setupAccessibility() {
+        // 打开voiceover可以朗读出提示button
+        loginButton.accessibilityLabel = "Login"
+        loginButton.accessibilityHint = "Tap to log into your account"
+        
+        signupButton.accessibilityLabel = "Signup"
+        signupButton.accessibilityHint = "Tap to create a new account"
+        
+        titleLabel.accessibilityLabel = "Welcome to BostonFree"
+    }
 }
-

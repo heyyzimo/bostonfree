@@ -5,6 +5,9 @@
 //  Created by user267597 on 12/3/24.
 //
 // Controllers/InitialViewController.swift
+
+//added title
+
 import UIKit
 
 class ViewController: UIViewController {
@@ -17,6 +20,7 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.title = "Welcome"
         
         initialView.loginButton.addTarget(self, action: #selector(handleLogin), for: .touchUpInside)
         initialView.signupButton.addTarget(self, action: #selector(handleSignup), for: .touchUpInside)
