@@ -3,12 +3,14 @@
 //  BostonFree
 //
 //  Created by user267597 on 12/3/24.
+//一signup自动给他建造一个default版本的userprofile数据库一面制造bug
 //验证邮箱对不对
 //firebase识别具体是什么error并且显示showalert里
 //设置密码too weak会有提示不行
 //邮箱in use也会有提示
 //增加了加载时的小圈圈！
 //重建了profile初始化
+
 import UIKit
 import FirebaseAuth
 import FirebaseFirestore

@@ -30,7 +30,7 @@ class HomePageViewController: UIViewController {
         homeView.logoutButton.addTarget(self, action: #selector(handleLogout), for: .touchUpInside)
         
         // 监听用户资料更新
-        NotificationCenter.default.addObserver(self, selector: #selector(handleProfileUpdated(_:)), name: Notification.Name("ProfileUpdated"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleProfileUpdated(_:)), name: Notification.Name("hahahaupdated"), object: nil)
     }
     
     
@@ -90,6 +90,7 @@ class HomePageViewController: UIViewController {
     @objc func handleEditProfile() {
         let editProfileVC = EditProfileViewController()
         editProfileVC.userId = Auth.auth().currentUser?.uid
+        editProfileVC.userProfile = userProfile // 传递当前用户的详细资料
         navigationController?.pushViewController(editProfileVC, animated: true)
     }
     

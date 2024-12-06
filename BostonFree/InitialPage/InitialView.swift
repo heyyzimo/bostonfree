@@ -1,4 +1,4 @@
-//修改部分：加了logo图片，根据系统设置背景颜色，添加语音
+//加了logo图片，根据系统设置背景颜色，添加语音
 import UIKit
 
 class InitialView: UIView {

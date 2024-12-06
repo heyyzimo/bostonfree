@@ -3,6 +3,7 @@
 //  BostonFree
 //
 //  Created by user267597 on 12/3/24.
+//一login就检查她有没有userprofile数据库，没有就给她建造一个，以免bug
 //增加了验证邮箱格式
 //增加了显示加载动画，就是没反应过来时会有小圈圈
 import UIKit
