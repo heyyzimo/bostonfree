@@ -4,7 +4,6 @@ import UIKit
 
 class HomePageView: UIView {
     
-    
     let editProfileButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Edit Profile", for: .normal)
@@ -25,7 +24,6 @@ class HomePageView: UIView {
         return button
     }()
 
-    
     // UI Elements
     let welcomeLabel: UILabel = {
         let label = UILabel()
@@ -42,6 +40,14 @@ class HomePageView: UIView {
         label.font = UIFont.systemFont(ofSize: 20)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
+    }()
+    
+    let logoImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "freehomepage") // 确保图片名与项目中的一致
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
     }()
     
     let logoutButton: UIButton = {
@@ -77,6 +83,7 @@ class HomePageView: UIView {
     func setupLayout() {
         self.addSubview(welcomeLabel)
         self.addSubview(emailLabel)
+        self.addSubview(logoImageView)
         self.addSubview(logoutButton)
         self.addSubview(editProfileButton)
         self.addSubview(viewEventsButton)
@@ -91,9 +98,15 @@ class HomePageView: UIView {
             emailLabel.topAnchor.constraint(equalTo: welcomeLabel.bottomAnchor, constant: 20),
             emailLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             
+            // Logo Image View
+            logoImageView.topAnchor.constraint(equalTo: emailLabel.bottomAnchor, constant: 20),
+            logoImageView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            logoImageView.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.5),
+            logoImageView.heightAnchor.constraint(equalToConstant: 100),
+            
             // Edit Profile Button
             editProfileButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            editProfileButton.topAnchor.constraint(equalTo: emailLabel.bottomAnchor, constant: 30),
+            editProfileButton.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 20),
             editProfileButton.widthAnchor.constraint(equalToConstant: 200),
             editProfileButton.heightAnchor.constraint(equalToConstant: 50),
             
@@ -117,4 +130,3 @@ class HomePageView: UIView {
         ])
     }
 }
-
