@@ -8,10 +8,19 @@
 import UIKit
 
 class EditProfileView: UIView {
-    
+    let profileImageView: UIImageView = {
+        let iv = UIImageView()
+        iv.contentMode = .scaleAspectFill
+        iv.layer.cornerRadius = 50
+        iv.clipsToBounds = true
+        iv.backgroundColor = UIColor.systemGray5
+        iv.translatesAutoresizingMaskIntoConstraints = false
+        return iv
+    }()
+
     let selectProfileImageButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Select Profile Picture", for: .normal)
+        button.setTitle("Select Profile Image", for: .normal)
         button.backgroundColor = UIColor.systemBlue
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 8
@@ -19,18 +28,6 @@ class EditProfileView: UIView {
         return button
     }()
 
-    let profileImageView: UIImageView = {
-        let iv = UIImageView()
-        iv.contentMode = .scaleAspectFill
-        iv.layer.cornerRadius = 50
-        iv.clipsToBounds = true
-        iv.layer.borderColor = UIColor.systemGray.cgColor
-        iv.layer.borderWidth = 1
-        iv.translatesAutoresizingMaskIntoConstraints = false
-        return iv
-    }()
-    
-    
     let nameTextField: UITextField = {
         let tf = UITextField()
         tf.placeholder = "Name"
@@ -81,7 +78,7 @@ class EditProfileView: UIView {
         textView.translatesAutoresizingMaskIntoConstraints = false
         return textView
     }()
-    
+
     let saveButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Save Profile", for: .normal)
@@ -91,72 +88,66 @@ class EditProfileView: UIView {
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = .white
         setupLayout()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    
-    
+
     func setupLayout() {
+        self.addSubview(profileImageView)
+        self.addSubview(selectProfileImageButton)
         self.addSubview(nameTextField)
         self.addSubview(cityTextField)
         self.addSubview(hobbyTextField)
         self.addSubview(pronounTextField)
         self.addSubview(phoneNumberTextField)
         self.addSubview(selfIntroductionTextView)
-        self.addSubview(profileImageView)
-        self.addSubview(selectProfileImageButton)
         self.addSubview(saveButton)
-        
+
         NSLayoutConstraint.activate([
-            
             profileImageView.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 20),
             profileImageView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             profileImageView.widthAnchor.constraint(equalToConstant: 100),
             profileImageView.heightAnchor.constraint(equalToConstant: 100),
 
-            selectProfileImageButton.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 10),
+            selectProfileImageButton.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 15),
             selectProfileImageButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            selectProfileImageButton.widthAnchor.constraint(equalTo: profileImageView.widthAnchor),
-            selectProfileImageButton.heightAnchor.constraint(equalToConstant: 40),
-            
-            nameTextField.topAnchor.constraint(equalTo: selectProfileImageButton.bottomAnchor, constant: 20),
+
+            nameTextField.topAnchor.constraint(equalTo: selectProfileImageButton.bottomAnchor, constant: 15),
             nameTextField.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             nameTextField.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.9),
-            
+
             cityTextField.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 15),
             cityTextField.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             cityTextField.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.9),
-            
+
             hobbyTextField.topAnchor.constraint(equalTo: cityTextField.bottomAnchor, constant: 15),
             hobbyTextField.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             hobbyTextField.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.9),
-            
+
             pronounTextField.topAnchor.constraint(equalTo: hobbyTextField.bottomAnchor, constant: 15),
             pronounTextField.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             pronounTextField.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.9),
-            
+
             phoneNumberTextField.topAnchor.constraint(equalTo: pronounTextField.bottomAnchor, constant: 15),
             phoneNumberTextField.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             phoneNumberTextField.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.9),
-            
+
             selfIntroductionTextView.topAnchor.constraint(equalTo: phoneNumberTextField.bottomAnchor, constant: 15),
             selfIntroductionTextView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             selfIntroductionTextView.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.9),
             selfIntroductionTextView.heightAnchor.constraint(equalToConstant: 120),
-            
+
             saveButton.topAnchor.constraint(equalTo: selfIntroductionTextView.bottomAnchor, constant: 20),
             saveButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             saveButton.widthAnchor.constraint(equalToConstant: 200),
             saveButton.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
-
 }

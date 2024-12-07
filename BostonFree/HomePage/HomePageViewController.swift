@@ -96,15 +96,33 @@ class HomePageViewController: UIViewController {
     
     
     @objc func handleShowProfile() {
-        guard let userProfile = userProfile else {
-            showAlert(message: "User profile is still loading. Please wait a moment.")
+        guard let userId = Auth.auth().currentUser?.uid else {
+            showAlert(message: "User ID not found. Please log in again.")
             return
         }
         
         let profileVC = ProfileViewController()
-        profileVC.userProfile = userProfile
-        navigationController?.pushViewController(profileVC, animated: true)
+        profileVC.userId = userId // 传递用户 ID
+        
+        // 跳转前重新加载用户数据
+        db.collection("profiles").document(userId).getDocument { [weak self] document, error in
+            if let error = error {
+                self?.showAlert(message: "Failed to load user profile: \(error.localizedDescription)")
+                return
+            }
+            
+            if let document = document, document.exists {
+                let data = document.data() ?? [:]
+                profileVC.userProfile = UserProfile(data: data) // 将最新数据传递给 ProfileViewController
+            } else {
+                print("User profile not found.")
+            }
+            
+            // 在数据加载完成后跳转
+            self?.navigationController?.pushViewController(profileVC, animated: true)
+        }
     }
+
 
     
     /// 查看活动
