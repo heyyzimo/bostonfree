@@ -17,7 +17,7 @@ class HomePageView: UIView {
     let showProfileButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Show Profile", for: .normal)
-        button.backgroundColor = UIColor.systemBlue
+        button.backgroundColor = UIColor.systemOrange
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 8
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -63,7 +63,7 @@ class HomePageView: UIView {
     let viewEventsButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("View Free Events", for: .normal)
-        button.backgroundColor = UIColor.systemBlue
+        button.backgroundColor = UIColor.systemIndigo
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 8
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -126,7 +126,7 @@ class HomePageView: UIView {
             
             // Logout Button
             logoutButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            logoutButton.topAnchor.constraint(equalTo: viewEventsButton.bottomAnchor, constant: 20),
+            logoutButton.topAnchor.constraint(equalTo: showProfileButton.bottomAnchor, constant: 20),
             logoutButton.widthAnchor.constraint(equalToConstant: 200),
             logoutButton.heightAnchor.constraint(equalToConstant: 50)
         ])
