@@ -9,6 +9,27 @@ import UIKit
 
 class EditProfileView: UIView {
     
+    let selectProfileImageButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Select Profile Picture", for: .normal)
+        button.backgroundColor = UIColor.systemBlue
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 8
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+
+    let profileImageView: UIImageView = {
+        let iv = UIImageView()
+        iv.contentMode = .scaleAspectFill
+        iv.layer.cornerRadius = 50
+        iv.clipsToBounds = true
+        iv.layer.borderColor = UIColor.systemGray.cgColor
+        iv.layer.borderWidth = 1
+        iv.translatesAutoresizingMaskIntoConstraints = false
+        return iv
+    }()
+    
     
     let nameTextField: UITextField = {
         let tf = UITextField()
@@ -90,10 +111,23 @@ class EditProfileView: UIView {
         self.addSubview(pronounTextField)
         self.addSubview(phoneNumberTextField)
         self.addSubview(selfIntroductionTextView)
+        self.addSubview(profileImageView)
+        self.addSubview(selectProfileImageButton)
         self.addSubview(saveButton)
         
         NSLayoutConstraint.activate([
-            nameTextField.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 20),
+            
+            profileImageView.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 20),
+            profileImageView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            profileImageView.widthAnchor.constraint(equalToConstant: 100),
+            profileImageView.heightAnchor.constraint(equalToConstant: 100),
+
+            selectProfileImageButton.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 10),
+            selectProfileImageButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            selectProfileImageButton.widthAnchor.constraint(equalTo: profileImageView.widthAnchor),
+            selectProfileImageButton.heightAnchor.constraint(equalToConstant: 40),
+            
+            nameTextField.topAnchor.constraint(equalTo: selectProfileImageButton.bottomAnchor, constant: 20),
             nameTextField.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             nameTextField.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.9),
             
