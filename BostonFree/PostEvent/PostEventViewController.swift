@@ -4,6 +4,7 @@
 //
 //  Created by user267597 on 12/4/24.
 //
+
 import UIKit
 import FirebaseAuth
 import FirebaseFirestore
@@ -31,7 +32,11 @@ class PostEventViewController: UIViewController {
         super.viewDidLoad()
         self.title = "Post Free Event"
         postEventView.postButton.addTarget(self, action: #selector(handlePostEvent), for: .touchUpInside)
-        postEventView.selectImageButton.addTarget(self, action: #selector(handleSelectImage), for: .touchUpInside)
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleSelectImage))
+        postEventView.eventImageView.isUserInteractionEnabled = true
+        postEventView.eventImageView.addGestureRecognizer(tapGesture)
+        
         postEventView.locationTextField.delegate = self
         postEventView.didTapSuggestion = { [weak self] suggestion in
             self?.selectLocation(suggestion: suggestion)
@@ -43,6 +48,32 @@ class PostEventViewController: UIViewController {
         postEventView.locationSuggestionsTableView.dataSource = self
         postEventView.mapView.isHidden = false
         postEventView.mapView.showsUserLocation = true
+        
+        let startDatePicker = UIDatePicker()
+        startDatePicker.datePickerMode = .dateAndTime
+        startDatePicker.preferredDatePickerStyle = .wheels
+        startDatePicker.addTarget(self, action: #selector(handleStartDateChange(_:)), for: .valueChanged)
+        postEventView.startTimeTextField.inputView = startDatePicker
+
+        let endDatePicker = UIDatePicker()
+        endDatePicker.datePickerMode = .dateAndTime
+        endDatePicker.preferredDatePickerStyle = .wheels
+        endDatePicker.addTarget(self, action: #selector(handleEndDateChange(_:)), for: .valueChanged)
+        postEventView.endTimeTextField.inputView = endDatePicker
+    }
+    
+    @objc func handleStartDateChange(_ sender: UIDatePicker) {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .short
+        postEventView.startTimeTextField.text = formatter.string(from: sender.date)
+    }
+
+    @objc func handleEndDateChange(_ sender: UIDatePicker) {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .short
+        postEventView.endTimeTextField.text = formatter.string(from: sender.date)
     }
     
     func setupLocationManager() {
@@ -74,6 +105,32 @@ class PostEventViewController: UIViewController {
             return
         }
         
+        guard let startText = postEventView.startTimeTextField.text, !startText.isEmpty,
+              let endText = postEventView.endTimeTextField.text, !endText.isEmpty else {
+            showAlert(message: "Please select start and end times for the event.")
+            return
+        }
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .short
+
+        guard let startTime = formatter.date(from: startText),
+              let endTime = formatter.date(from: endText) else {
+            showAlert(message: "Invalid date format.")
+            return
+        }
+        
+        if startTime > endTime {
+            showAlert(message: "Start time cannot be later than end time.")
+            return
+        }
+        
+        let now = Date()
+        if endTime < now {
+            showAlert(message: "End time cannot be in the past.")
+            return
+        }
+        
         let description = postEventView.descriptionTextView.text.isEmpty ? nil : postEventView.descriptionTextView.text
         let website = postEventView.websiteTextField.text?.isEmpty == false ? postEventView.websiteTextField.text : nil
         
@@ -101,8 +158,8 @@ class PostEventViewController: UIViewController {
                     self?.showAlert(message: "Invalid image URL.")
                     return
                 }
-                // store event data to Firestore
-                self?.storeEventData(name: name, location: location, imageUrl: imageUrl, description: description, website: website, latitude: coordinate.latitude, longitude: coordinate.longitude)
+                // store event data to Firestore including startTime and endTime
+                self?.storeEventData(name: name, location: location, imageUrl: imageUrl, description: description, website: website, latitude: coordinate.latitude, longitude: coordinate.longitude, startTime: startTime, endTime: endTime)
             }
         }
         
@@ -123,7 +180,7 @@ class PostEventViewController: UIViewController {
         }
     }
     
-    func storeEventData(name: String, location: String, imageUrl: String, description: String?, website: String?, latitude: Double, longitude: Double) {
+    func storeEventData(name: String, location: String, imageUrl: String, description: String?, website: String?, latitude: Double, longitude: Double, startTime: Date, endTime: Date) {
         let eventData: [String: Any] = [
             "name": name,
             "location": location,
@@ -132,7 +189,9 @@ class PostEventViewController: UIViewController {
             "imageUrl": imageUrl,
             "description": description ?? "",
             "website": website ?? "",
-            "createdAt": Timestamp(date: Date())
+            "createdAt": Timestamp(date: Date()),
+            "startTime": Timestamp(date: startTime),
+            "endTime": Timestamp(date: endTime)
         ]
         
         db.collection("events").addDocument(data: eventData) { [weak self] error in
@@ -211,7 +270,7 @@ class PostEventViewController: UIViewController {
         let alert = UIAlertController(title: title,
                                       message: message,
                                       preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: title == "Error" ? "OK" : "OK",
+        alert.addAction(UIAlertAction(title: "OK",
                                       style: .default,
                                       handler: { _ in
                                         completion?()
@@ -281,7 +340,7 @@ extension PostEventViewController: UITextFieldDelegate {
             let currentText = textField.text ?? ""
             guard let stringRange = Range(range, in: currentText) else { return false }
             let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
-            completer.queryFragment = updatedText 
+            completer.queryFragment = updatedText
         }
         return true
     }

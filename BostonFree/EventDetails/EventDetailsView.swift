@@ -4,6 +4,7 @@
 //
 //  Created by user267597 on 12/3/24.
 //
+
 import UIKit
 import SDWebImage
 
@@ -43,6 +44,24 @@ class EventDetailsView: UIView {
         return button
     }()
     
+    let startTimeLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 16)
+        label.textColor = .darkGray
+        label.numberOfLines = 1
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    let endTimeLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 16)
+        label.textColor = .darkGray
+        label.numberOfLines = 1
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
     let descriptionLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 16)
@@ -70,6 +89,8 @@ class EventDetailsView: UIView {
         self.addSubview(eventNameLabel)
         self.addSubview(locationLabel)
         self.addSubview(mapButton)
+        self.addSubview(startTimeLabel)
+        self.addSubview(endTimeLabel)
         self.addSubview(descriptionLabel)
         self.addSubview(websiteButton)
         
@@ -85,13 +106,22 @@ class EventDetailsView: UIView {
             
             locationLabel.topAnchor.constraint(equalTo: eventNameLabel.bottomAnchor, constant: 8),
             locationLabel.leftAnchor.constraint(equalTo: eventNameLabel.leftAnchor),
-            locationLabel.rightAnchor.constraint(equalTo: eventNameLabel.rightAnchor),
+            locationLabel.rightAnchor.constraint(equalTo: mapButton.leftAnchor, constant: -8),
+            
             mapButton.centerYAnchor.constraint(equalTo: locationLabel.centerYAnchor),
             mapButton.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -16),
             mapButton.widthAnchor.constraint(equalToConstant: 24),
             mapButton.heightAnchor.constraint(equalToConstant: 24),
             
-            descriptionLabel.topAnchor.constraint(equalTo: locationLabel.bottomAnchor, constant: 16),
+            startTimeLabel.topAnchor.constraint(equalTo: locationLabel.bottomAnchor, constant: 8),
+            startTimeLabel.leftAnchor.constraint(equalTo: eventNameLabel.leftAnchor),
+            startTimeLabel.rightAnchor.constraint(equalTo: eventNameLabel.rightAnchor),
+            
+            endTimeLabel.topAnchor.constraint(equalTo: startTimeLabel.bottomAnchor, constant: 8),
+            endTimeLabel.leftAnchor.constraint(equalTo: eventNameLabel.leftAnchor),
+            endTimeLabel.rightAnchor.constraint(equalTo: eventNameLabel.rightAnchor),
+            
+            descriptionLabel.topAnchor.constraint(equalTo: endTimeLabel.bottomAnchor, constant: 16),
             descriptionLabel.leftAnchor.constraint(equalTo: eventNameLabel.leftAnchor),
             descriptionLabel.rightAnchor.constraint(equalTo: eventNameLabel.rightAnchor),
             
@@ -107,7 +137,7 @@ class EventDetailsView: UIView {
         if let website = event.website, let _ = URL(string: website) {
             websiteButton.isHidden = false
             websiteButton.addTarget(self, action: #selector(openWebsite), for: .touchUpInside)
-            websiteButton.tag = event.eventId.hash 
+            websiteButton.tag = event.eventId.hash
             websiteButton.accessibilityLabel = website
         } else {
             websiteButton.isHidden = true
@@ -117,6 +147,17 @@ class EventDetailsView: UIView {
         } else {
             eventImageView.image = UIImage(systemName: "photo")
         }
+        
+        // 格式化并显示 startTime 和 endTime
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .short
+        
+        let startText = formatter.string(from: event.startTime)
+        let endText = formatter.string(from: event.endTime)
+        
+        startTimeLabel.text = "Start: \(startText)"
+        endTimeLabel.text = "End: \(endText)"
     }
     
     @objc func openWebsite(sender: UIButton) {
@@ -128,4 +169,3 @@ class EventDetailsView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 }
-

@@ -75,25 +75,34 @@ class PostEventView: UIView, UIImagePickerControllerDelegate, UINavigationContro
         return tf
     }()
     
-    let selectImageButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("Select Event Image", for: .normal)
-        button.backgroundColor = UIColor.systemBlue
-        button.setTitleColor(.white, for: .normal)
-        button.layer.cornerRadius = 8
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-    
     let eventImageView: UIImageView = {
         let iv = UIImageView()
-        iv.contentMode = .scaleAspectFill
+        iv.contentMode = .center
         iv.layer.cornerRadius = 8
         iv.clipsToBounds = true
         iv.backgroundColor = UIColor.systemGray5
         iv.translatesAutoresizingMaskIntoConstraints = false
+        iv.image = UIImage(systemName: "plus")
+        iv.tintColor = .gray
         return iv
     }()
+    
+    let startTimeTextField: UITextField = {
+        let tf = UITextField()
+        tf.placeholder = "Start Time"
+        tf.borderStyle = .roundedRect
+        tf.translatesAutoresizingMaskIntoConstraints = false
+        return tf
+    }()
+
+    let endTimeTextField: UITextField = {
+        let tf = UITextField()
+        tf.placeholder = "End Time"
+        tf.borderStyle = .roundedRect
+        tf.translatesAutoresizingMaskIntoConstraints = false
+        return tf
+    }()
+
     
     let postButton: UIButton = {
         let button = UIButton(type: .system)
@@ -122,9 +131,10 @@ class PostEventView: UIView, UIImagePickerControllerDelegate, UINavigationContro
         contentView.addSubview(locationContainerView)
         contentView.addSubview(descriptionTextView)
         contentView.addSubview(websiteTextField)
-        contentView.addSubview(selectImageButton)
         contentView.addSubview(eventImageView)
         contentView.addSubview(postButton)
+        contentView.addSubview(startTimeTextField)
+        contentView.addSubview(endTimeTextField)
         
         locationContainerView.addSubview(locationSuggestionsTableView)
         locationContainerView.addSubview(mapView)
@@ -154,7 +164,7 @@ class PostEventView: UIView, UIImagePickerControllerDelegate, UINavigationContro
             locationContainerView.topAnchor.constraint(equalTo: locationTextField.bottomAnchor),
             locationContainerView.leftAnchor.constraint(equalTo: locationTextField.leftAnchor),
             locationContainerView.rightAnchor.constraint(equalTo: locationTextField.rightAnchor),
-            locationContainerView.heightAnchor.constraint(equalToConstant: 200), // 固定高度
+            locationContainerView.heightAnchor.constraint(equalToConstant: 200),
             
             locationSuggestionsTableView.topAnchor.constraint(equalTo: locationContainerView.topAnchor),
             locationSuggestionsTableView.leftAnchor.constraint(equalTo: locationContainerView.leftAnchor),
@@ -166,7 +176,17 @@ class PostEventView: UIView, UIImagePickerControllerDelegate, UINavigationContro
             mapView.rightAnchor.constraint(equalTo: locationContainerView.rightAnchor),
             mapView.bottomAnchor.constraint(equalTo: locationContainerView.bottomAnchor),
             
-            descriptionTextView.topAnchor.constraint(equalTo: locationContainerView.bottomAnchor, constant: 16),
+            startTimeTextField.topAnchor.constraint(equalTo: locationContainerView.bottomAnchor, constant: 16),
+            startTimeTextField.leftAnchor.constraint(equalTo: eventNameTextField.leftAnchor),
+            startTimeTextField.rightAnchor.constraint(equalTo: eventNameTextField.rightAnchor),
+            startTimeTextField.heightAnchor.constraint(equalToConstant: 40),
+            
+            endTimeTextField.topAnchor.constraint(equalTo: startTimeTextField.bottomAnchor, constant: 16),
+            endTimeTextField.leftAnchor.constraint(equalTo: eventNameTextField.leftAnchor),
+            endTimeTextField.rightAnchor.constraint(equalTo: eventNameTextField.rightAnchor),
+            endTimeTextField.heightAnchor.constraint(equalToConstant: 40),
+
+            descriptionTextView.topAnchor.constraint(equalTo: endTimeTextField.bottomAnchor, constant: 16),
             descriptionTextView.leftAnchor.constraint(equalTo: eventNameTextField.leftAnchor),
             descriptionTextView.rightAnchor.constraint(equalTo: eventNameTextField.rightAnchor),
             descriptionTextView.heightAnchor.constraint(equalToConstant: 100),
@@ -176,30 +196,26 @@ class PostEventView: UIView, UIImagePickerControllerDelegate, UINavigationContro
             websiteTextField.rightAnchor.constraint(equalTo: eventNameTextField.rightAnchor),
             websiteTextField.heightAnchor.constraint(equalToConstant: 40),
             
-            selectImageButton.topAnchor.constraint(equalTo: websiteTextField.bottomAnchor, constant: 16),
-            selectImageButton.leftAnchor.constraint(equalTo: eventNameTextField.leftAnchor),
-            selectImageButton.rightAnchor.constraint(equalTo: eventNameTextField.rightAnchor),
-            selectImageButton.heightAnchor.constraint(equalToConstant: 50),
-            
-            eventImageView.topAnchor.constraint(equalTo: selectImageButton.bottomAnchor, constant: 16),
+            eventImageView.topAnchor.constraint(equalTo: websiteTextField.bottomAnchor, constant: 16),
             eventImageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             eventImageView.widthAnchor.constraint(equalToConstant: 200),
             eventImageView.heightAnchor.constraint(equalToConstant: 200),
             
-            // Post Button
             postButton.topAnchor.constraint(equalTo: eventImageView.bottomAnchor, constant: 24),
             postButton.leftAnchor.constraint(equalTo: eventNameTextField.leftAnchor),
             postButton.rightAnchor.constraint(equalTo: eventNameTextField.rightAnchor),
             postButton.heightAnchor.constraint(equalToConstant: 50),
-            postButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20) 
+            postButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20)
         ])
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let editedImage = info[.editedImage] as? UIImage {
             eventImageView.image = editedImage
+            eventImageView.contentMode = .scaleAspectFill
         } else if let originalImage = info[.originalImage] as? UIImage {
             eventImageView.image = originalImage
+            eventImageView.contentMode = .scaleAspectFill
         }
         picker.dismiss(animated: true, completion: nil)
     }

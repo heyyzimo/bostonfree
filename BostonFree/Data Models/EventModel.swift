@@ -17,7 +17,9 @@ struct EventModel {
     let description: String?
     let website: String?
     let createdAt: Date
-    
+    let startTime: Date
+    let endTime: Date
+
     init(documentId: String, dictionary: [String: Any]) {
         self.eventId = documentId
         self.name = dictionary["name"] as? String ?? ""
@@ -27,10 +29,22 @@ struct EventModel {
         self.imageUrl = dictionary["imageUrl"] as? String ?? ""
         self.description = dictionary["description"] as? String
         self.website = dictionary["website"] as? String
+
         if let timestamp = dictionary["createdAt"] as? Timestamp {
             self.createdAt = timestamp.dateValue()
         } else {
             self.createdAt = Date()
+        }
+        if let startTimestamp = dictionary["startTime"] as? Timestamp {
+            self.startTime = startTimestamp.dateValue()
+        } else {
+            self.startTime = Date()
+        }
+
+        if let endTimestamp = dictionary["endTime"] as? Timestamp {
+            self.endTime = endTimestamp.dateValue()
+        } else {
+            self.endTime = Date().addingTimeInterval(3600)
         }
     }
 }

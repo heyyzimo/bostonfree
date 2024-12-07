@@ -4,6 +4,7 @@
 //
 //  Created by user267597 on 12/3/24.
 //
+
 import UIKit
 import FirebaseFirestore
 
@@ -13,6 +14,9 @@ class EventsListViewController: UIViewController {
     let db = Firestore.firestore()
     
     var listener: ListenerRegistration?
+    
+    var allEvents: [EventModel] = []
+    var currentMode: String = "current" // 默认为 current
     
     override func loadView() {
         self.view = eventsListView
@@ -29,13 +33,20 @@ class EventsListViewController: UIViewController {
             let detailsVC = EventDetailsViewController(event: event)
             self?.navigationController?.pushViewController(detailsVC, animated: true)
         }
+        
         eventsListView.didTapPostEvent = { [weak self] in
             let postEventVC = PostEventViewController()
             self?.navigationController?.pushViewController(postEventVC, animated: true)
         }
+        
+        eventsListView.didSelectSegment = { [weak self] mode in
+            self?.currentMode = mode
+            self?.filterEvents()
+        }
 
         fetchEvents()
     }
+    
     @objc func mapButtonTapped() {
         let mapVC = MapViewController()
         self.navigationController?.pushViewController(mapVC, animated: true)
@@ -48,13 +59,31 @@ class EventsListViewController: UIViewController {
                 return
             }
             guard let documents = snapshot?.documents else { return }
-            self?.eventsListView.events = documents.map { doc in
+            
+            self?.allEvents = documents.map { doc in
                 return EventModel(documentId: doc.documentID, dictionary: doc.data())
             }
+            
             DispatchQueue.main.async {
-                self?.eventsListView.tableView.reloadData()
+                self?.filterEvents()
             }
         }
+    }
+    
+    func filterEvents() {
+        let now = Date()
+        if currentMode == "current" {
+            // current events：startTime <= now <= endTime
+            eventsListView.events = allEvents.filter { event in
+                return event.startTime <= now && now <= event.endTime
+            }
+        } else {
+            // upcoming events：now < startTime
+            eventsListView.events = allEvents.filter { event in
+                return now < event.startTime
+            }
+        }
+        eventsListView.tableView.reloadData()
     }
     
     deinit {

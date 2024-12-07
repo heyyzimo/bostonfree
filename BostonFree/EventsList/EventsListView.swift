@@ -8,6 +8,31 @@ import UIKit
 
 class EventsListView: UIView, UITableViewDelegate, UITableViewDataSource {
     
+    let currentButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Current", for: .normal)
+        button.setTitleColor(.systemBlue, for: .normal)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    let upcomingButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Upcoming", for: .normal)
+        button.setTitleColor(.systemBlue, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    let segmentLine: UIView = {
+        let view = UIView()
+        view.backgroundColor = .lightGray
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     let tableView: UITableView = {
         let tv = UITableView()
         tv.register(EventTableViewCell.self, forCellReuseIdentifier: "EventCell")
@@ -34,6 +59,7 @@ class EventsListView: UIView, UITableViewDelegate, UITableViewDataSource {
     // Callback for post event button tap
     var didTapPostEvent: (() -> Void)?
     
+    var didSelectSegment: ((String) -> Void)?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -44,25 +70,55 @@ class EventsListView: UIView, UITableViewDelegate, UITableViewDataSource {
         postEventButton.addTarget(self, action: #selector(handlePostEvent), for: .touchUpInside)
         tableView.rowHeight = 150
         tableView.estimatedRowHeight = 150
+        
+        currentButton.addTarget(self, action: #selector(handleCurrentTapped), for: .touchUpInside)
+        upcomingButton.addTarget(self, action: #selector(handleUpcomingTapped), for: .touchUpInside)
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    @objc func handleCurrentTapped() {
+        currentButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        upcomingButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+        didSelectSegment?("current")
     }
     
+    @objc func handleUpcomingTapped() {
+        upcomingButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        currentButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+        didSelectSegment?("upcoming")
+    }
     
+    @objc func handlePostEvent() {
+        didTapPostEvent?()
+    }
+
     func setupLayout() {
+        self.addSubview(currentButton)
+        self.addSubview(upcomingButton)
+        self.addSubview(segmentLine)
         self.addSubview(tableView)
         self.addSubview(postEventButton)
         
         NSLayoutConstraint.activate([
-            // TableView constraints
-            tableView.topAnchor.constraint(equalTo: self.topAnchor),
+            currentButton.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor),
+            currentButton.leftAnchor.constraint(equalTo: self.leftAnchor),
+            currentButton.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.5),
+            currentButton.heightAnchor.constraint(equalToConstant: 40),
+            
+            upcomingButton.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor),
+            upcomingButton.rightAnchor.constraint(equalTo: self.rightAnchor),
+            upcomingButton.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.5),
+            upcomingButton.heightAnchor.constraint(equalToConstant: 40),
+            
+            segmentLine.topAnchor.constraint(equalTo: currentButton.bottomAnchor),
+            segmentLine.leftAnchor.constraint(equalTo: self.leftAnchor),
+            segmentLine.rightAnchor.constraint(equalTo: self.rightAnchor),
+            segmentLine.heightAnchor.constraint(equalToConstant: 1),
+            
+            tableView.topAnchor.constraint(equalTo: segmentLine.bottomAnchor),
             tableView.leftAnchor.constraint(equalTo: self.leftAnchor),
             tableView.rightAnchor.constraint(equalTo: self.rightAnchor),
             tableView.bottomAnchor.constraint(equalTo: postEventButton.topAnchor, constant: -10),
             
-            // Post Event Button constraints
             postEventButton.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 16),
             postEventButton.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -16),
             postEventButton.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: -16),
@@ -70,11 +126,11 @@ class EventsListView: UIView, UITableViewDelegate, UITableViewDataSource {
         ])
     }
     
-    @objc func handlePostEvent() {
-        didTapPostEvent?()
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
-    
+    // UITableViewDataSource & Delegate
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
          return events.count
     }
