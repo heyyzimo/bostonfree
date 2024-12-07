@@ -19,7 +19,7 @@ class PostEventViewController: UIViewController {
     
     let locationManager = CLLocationManager()
     var selectedCoordinate: CLLocationCoordinate2D?
-    
+    var userLocation: CLLocation?
     let completer = MKLocalSearchCompleter()
     var searchResults = [MKLocalSearchCompletion]()
     
@@ -42,6 +42,7 @@ class PostEventViewController: UIViewController {
         postEventView.locationSuggestionsTableView.delegate = self
         postEventView.locationSuggestionsTableView.dataSource = self
         postEventView.mapView.isHidden = false
+        postEventView.mapView.showsUserLocation = true
     }
     
     func setupLocationManager() {
@@ -258,8 +259,16 @@ extension PostEventViewController: CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        locationManager.stopUpdatingLocation()
-    }
+           guard let latestLocation = locations.last else { return }
+           userLocation = latestLocation
+
+           let region = MKCoordinateRegion(center: latestLocation.coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
+           postEventView.mapView.setRegion(region, animated: true)
+
+           selectedCoordinate = latestLocation.coordinate
+
+           locationManager.stopUpdatingLocation()
+       }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         showAlert(message: "Failed to get your location: \(error.localizedDescription)")
