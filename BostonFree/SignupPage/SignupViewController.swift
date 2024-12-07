@@ -115,12 +115,12 @@ class SignupViewController: UIViewController {
     
     func createInitialProfile(for userId: String) {
         let initialProfile: [String: Any] = [
-            "name": "New111er",
-            "bio": "This is11 profile.",
-            "city": "111",
-            "hobby": "111",
-            "pronoun": "111/Them",
-            "phoneNumber": "111/A"
+            "name": "Newuer",
+            "bio": "This is profile.",
+            "city": "boston(default value)",
+            "hobby": "unknown",
+            "pronoun": "unknow",
+            "phoneNumber": "unknown"
         ]
         
         db.collection("profiles").document(userId).setData(initialProfile) { error in

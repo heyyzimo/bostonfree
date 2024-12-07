@@ -64,6 +64,11 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
     @objc func saveProfile() {
         guard let userId = userId else { return }
 
+        // 开始显示 Activity Indicator
+        editProfileView.activityIndicator.startAnimating()
+        editProfileView.saveButton.isEnabled = false // 禁用保存按钮防止重复提交
+
+        // 获取文本输入
         let name = editProfileView.nameTextField.text ?? ""
         let city = editProfileView.cityTextField.text ?? ""
         let hobby = editProfileView.hobbyTextField.text ?? ""
@@ -78,11 +83,13 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
             storageRef.putData(imageData, metadata: nil) { [weak self] _, error in
                 if let error = error {
                     self?.showAlert(message: "Failed to upload image: \(error.localizedDescription)")
+                    self?.stopActivityIndicator() // 停止 Activity Indicator
                     return
                 }
                 storageRef.downloadURL { url, error in
                     if let error = error {
                         self?.showAlert(message: "Failed to get image URL: \(error.localizedDescription)")
+                        self?.stopActivityIndicator() // 停止 Activity Indicator
                         return
                     }
                     guard let imageUrl = url?.absoluteString else { return }
@@ -108,6 +115,7 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
         }
 
         db.collection("profiles").document(userId!).setData(userData, merge: true) { [weak self] error in
+            self?.stopActivityIndicator() // 停止 Activity Indicator
             if let error = error {
                 self?.showAlert(message: "Failed to save profile: \(error.localizedDescription)")
                 return
@@ -117,6 +125,12 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
             self?.navigationController?.popViewController(animated: true)
         }
     }
+
+    func stopActivityIndicator() {
+        editProfileView.activityIndicator.stopAnimating()
+        editProfileView.saveButton.isEnabled = true
+    }
+
 
     func showAlert(message: String) {
         let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)

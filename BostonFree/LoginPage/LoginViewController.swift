@@ -102,11 +102,11 @@ class LoginViewController: UIViewController {
     // 创建初始用户 Profile
     func createInitialProfile(for userId: String) {
         let initialProfile: [String: Any] = [
-            "name": "New222User",
-            "city": "Unkn222own",
-            "hobby": "Non22e",
-            "pronoun": "Th22ey/Them",
-            "phoneNumber": "22N/A",
+            "name": "NewUser",
+            "city": "Unknown",
+            "hobby": "None",
+            "pronoun": "They/Them",
+            "phoneNumber": "N/A",
             "selfIntroduction" : "initial introduction"
             
         ]

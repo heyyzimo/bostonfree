@@ -8,6 +8,14 @@
 import UIKit
 
 class EditProfileView: UIView {
+    
+    let activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .large)
+        indicator.hidesWhenStopped = true
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        return indicator
+    }()
+
     let profileImageView: UIImageView = {
         let iv = UIImageView()
         iv.contentMode = .scaleAspectFill
@@ -109,6 +117,8 @@ class EditProfileView: UIView {
         self.addSubview(phoneNumberTextField)
         self.addSubview(selfIntroductionTextView)
         self.addSubview(saveButton)
+        self.addSubview(activityIndicator) // 添加 Activity Indicator
+
 
         NSLayoutConstraint.activate([
             profileImageView.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 20),
@@ -147,7 +157,10 @@ class EditProfileView: UIView {
             saveButton.topAnchor.constraint(equalTo: selfIntroductionTextView.bottomAnchor, constant: 20),
             saveButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             saveButton.widthAnchor.constraint(equalToConstant: 200),
-            saveButton.heightAnchor.constraint(equalToConstant: 50)
+            saveButton.heightAnchor.constraint(equalToConstant: 50),
+            
+            activityIndicator.centerXAnchor.constraint(equalTo: self.centerXAnchor), // 居中布局 Activity Indicator
+            activityIndicator.centerYAnchor.constraint(equalTo: self.centerYAnchor)
         ])
     }
 }
