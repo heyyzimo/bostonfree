@@ -104,9 +104,16 @@ class HomePageView: UIView {
             logoImageView.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.5),
             logoImageView.heightAnchor.constraint(equalToConstant: 100),
             
+            // View Events Button
+            viewEventsButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            viewEventsButton.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 30),
+            viewEventsButton.widthAnchor.constraint(equalToConstant: 200),
+            viewEventsButton.heightAnchor.constraint(equalToConstant: 50),
+            
+            
             // Edit Profile Button
             editProfileButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            editProfileButton.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 20),
+            editProfileButton.topAnchor.constraint(equalTo: viewEventsButton.bottomAnchor, constant: 20),
             editProfileButton.widthAnchor.constraint(equalToConstant: 200),
             editProfileButton.heightAnchor.constraint(equalToConstant: 50),
             
@@ -116,11 +123,6 @@ class HomePageView: UIView {
             showProfileButton.widthAnchor.constraint(equalToConstant: 200),
             showProfileButton.heightAnchor.constraint(equalToConstant: 50),
             
-            // View Events Button
-            viewEventsButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            viewEventsButton.topAnchor.constraint(equalTo: showProfileButton.bottomAnchor, constant: 30),
-            viewEventsButton.widthAnchor.constraint(equalToConstant: 200),
-            viewEventsButton.heightAnchor.constraint(equalToConstant: 50),
             
             // Logout Button
             logoutButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
