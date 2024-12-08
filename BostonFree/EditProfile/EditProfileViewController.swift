@@ -10,6 +10,7 @@
 import UIKit
 import FirebaseFirestore
 import FirebaseStorage
+import SDWebImage
 
 class EditProfileViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     let editProfileView = EditProfileView()
@@ -24,11 +25,9 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Edit Profile"
-
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(saveProfile))
         populateFieldsWithUserProfile()
-
         editProfileView.selectProfileImageButton.addTarget(self, action: #selector(selectProfileImage), for: .touchUpInside)
-        editProfileView.saveButton.addTarget(self, action: #selector(saveProfile), for: .touchUpInside)
     }
 
     func populateFieldsWithUserProfile() {
@@ -62,13 +61,14 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
     }
 
     @objc func saveProfile() {
-        guard let userId = userId else { return }
+        guard let userId = userId else {
+            showAlert(message: "User ID is missing.")
+            return
+        }
 
-        // 开始显示 Activity Indicator
         editProfileView.activityIndicator.startAnimating()
-        editProfileView.saveButton.isEnabled = false // 禁用保存按钮防止重复提交
+        navigationItem.rightBarButtonItem?.isEnabled = false
 
-        // 获取文本输入
         let name = editProfileView.nameTextField.text ?? ""
         let city = editProfileView.cityTextField.text ?? ""
         let hobby = editProfileView.hobbyTextField.text ?? ""
@@ -83,25 +83,29 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
             storageRef.putData(imageData, metadata: nil) { [weak self] _, error in
                 if let error = error {
                     self?.showAlert(message: "Failed to upload image: \(error.localizedDescription)")
-                    self?.stopActivityIndicator() // 停止 Activity Indicator
+                    self?.stopActivityIndicator()
                     return
                 }
                 storageRef.downloadURL { url, error in
                     if let error = error {
                         self?.showAlert(message: "Failed to get image URL: \(error.localizedDescription)")
-                        self?.stopActivityIndicator() // 停止 Activity Indicator
+                        self?.stopActivityIndicator()
                         return
                     }
-                    guard let imageUrl = url?.absoluteString else { return }
-                    self?.saveUserProfile(name: name, city: city, hobby: hobby, pronoun: pronoun, phoneNumber: phoneNumber, selfIntroduction: selfIntroduction, imageUrl: imageUrl)
+                    guard let imageUrl = url?.absoluteString else {
+                        self?.showAlert(message: "Image URL is invalid.")
+                        self?.stopActivityIndicator()
+                        return
+                    }
+                    self?.saveUserProfile(userId: userId, name: name, city: city, hobby: hobby, pronoun: pronoun, phoneNumber: phoneNumber, selfIntroduction: selfIntroduction, imageUrl: imageUrl)
                 }
             }
         } else {
-            saveUserProfile(name: name, city: city, hobby: hobby, pronoun: pronoun, phoneNumber: phoneNumber, selfIntroduction: selfIntroduction, imageUrl: nil)
+            saveUserProfile(userId: userId, name: name, city: city, hobby: hobby, pronoun: pronoun, phoneNumber: phoneNumber, selfIntroduction: selfIntroduction, imageUrl: nil)
         }
     }
 
-    func saveUserProfile(name: String, city: String, hobby: String, pronoun: String, phoneNumber: String, selfIntroduction: String, imageUrl: String?) {
+    func saveUserProfile(userId: String, name: String, city: String, hobby: String, pronoun: String, phoneNumber: String, selfIntroduction: String, imageUrl: String?) {
         var userData: [String: Any] = [
             "name": name,
             "city": city,
@@ -114,23 +118,23 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
             userData["profileImageUrl"] = imageUrl
         }
 
-        db.collection("profiles").document(userId!).setData(userData, merge: true) { [weak self] error in
-            self?.stopActivityIndicator() // 停止 Activity Indicator
+        db.collection("profiles").document(userId).setData(userData, merge: true) { [weak self] error in
+            self?.stopActivityIndicator()
             if let error = error {
                 self?.showAlert(message: "Failed to save profile: \(error.localizedDescription)")
                 return
             }
 
             NotificationCenter.default.post(name: Notification.Name("ProfileUpdated"), object: nil, userInfo: userData)
+            
             self?.navigationController?.popViewController(animated: true)
         }
     }
 
     func stopActivityIndicator() {
         editProfileView.activityIndicator.stopAnimating()
-        editProfileView.saveButton.isEnabled = true
+        navigationItem.rightBarButtonItem?.isEnabled = true
     }
-
 
     func showAlert(message: String) {
         let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
