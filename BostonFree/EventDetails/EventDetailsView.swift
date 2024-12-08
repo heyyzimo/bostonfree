@@ -4,7 +4,6 @@
 //
 //  Created by user267597 on 12/3/24.
 //
-
 import UIKit
 import SDWebImage
 
@@ -35,6 +34,7 @@ class EventDetailsView: UIView {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
+    
     let mapButton: UIButton = {
         let button = UIButton(type: .system)
         let image = UIImage(systemName: "map")
@@ -77,6 +77,9 @@ class EventDetailsView: UIView {
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
+    
+    // Property to store the website URL
+    private var websiteURL: URL?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -134,21 +137,28 @@ class EventDetailsView: UIView {
         eventNameLabel.text = event.name
         locationLabel.text = "Location: \(event.location)"
         descriptionLabel.text = event.description ?? "No Description"
-        if let website = event.website, let _ = URL(string: website) {
-            websiteButton.isHidden = false
-            websiteButton.addTarget(self, action: #selector(openWebsite), for: .touchUpInside)
-            websiteButton.tag = event.eventId.hash
-            websiteButton.accessibilityLabel = website
+        
+        if let website = event.website, var urlComponents = URLComponents(string: website) {
+            if urlComponents.scheme == nil {
+                urlComponents.scheme = "https"
+            }
+            if let validURL = urlComponents.url {
+                websiteButton.isHidden = false
+                websiteButton.addTarget(self, action: #selector(openWebsite), for: .touchUpInside)
+                websiteURL = validURL
+            } else {
+                websiteButton.isHidden = true
+            }
         } else {
             websiteButton.isHidden = true
         }
+        
         if let url = URL(string: event.imageUrl) {
             eventImageView.sd_setImage(with: url, placeholderImage: UIImage(systemName: "photo"))
         } else {
             eventImageView.image = UIImage(systemName: "photo")
         }
         
-        // 格式化并显示 startTime 和 endTime
         let formatter = DateFormatter()
         formatter.dateStyle = .short
         formatter.timeStyle = .short
@@ -160,8 +170,8 @@ class EventDetailsView: UIView {
         endTimeLabel.text = "End: \(endText)"
     }
     
-    @objc func openWebsite(sender: UIButton) {
-        guard let website = sender.accessibilityLabel, let url = URL(string: website) else { return }
+    @objc func openWebsite() {
+        guard let url = websiteURL else { return }
         UIApplication.shared.open(url, options: [:], completionHandler: nil)
     }
     
